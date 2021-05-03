@@ -1,0 +1,3 @@
+[submodule "ulfm-testing"]
+	path = ulfm-testing
+	url = https://bitbucket.org/icldistcomp/ulfm-testing.git
