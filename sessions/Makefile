@@ -37,14 +37,32 @@ EXAMPLES = \
 	 sessions_ex2 \
 	 sessions_ex3 \
 	 sessions_ex4 \
-	 sessions_test
+	 sessions_test \
+	 sessions_test1 \
+	 sessions_test2 \
+	 sessions_test3 \
+	 sessions_test4 \
+	 sessions_test5 \
+	 sessions_test6 \
+	 sessions_test7 \
+	 sessions_test8 \
+	 sessions_test9 \
+	 sessions_test10 \
+	 sessions_test11 \
+	 sessions_test12 \
+	 sessions_test13 \
+	 sessions_test14 \
+	 sessions_test15 \
+	 sessions_test16
 
 
 # Default target.  Always build the C MPI examples.  Only build the
 # others if we have the appropriate Open MPI / OpenSHMEM language
 # bindings.
 
-all: sessions_ex1.o sessions_ex2 sessions_test
+all: sessions_ex1.o sessions_ex2 sessions_test sessions_test1 sessions_test2 sessions_test3 sessions_test4 sessions_test5 \
+	 sessions_test6 sessions_test7 sessions_test8 sessions_test9 sessions_test10 sessions_test11 sessions_test12 sessions_test13 \
+	 sessions_test14 sessions_test15 sessions_test16
 	@ if which ompi_info >/dev/null 2>&1 ; then \
 		$(MAKE) mpi; \
 	fi
@@ -74,5 +92,37 @@ sessions_ex3: sessions_ex3.f90
 sessions_ex4: sessions_ex4.f90
 	$(MPIFC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
 sessions_test: sessions_test.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test1: sessions_test1.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test2: sessions_test2.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test3: sessions_test3.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test4: sessions_test4.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test5: sessions_test5.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test6: sessions_test6.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test7: sessions_test7.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test8: sessions_test8.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test9: sessions_test9.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test10: sessions_test10.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test11: sessions_test11.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test12: sessions_test12.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test13: sessions_test13.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test14: sessions_test14.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test15: sessions_test15.c
+	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
+sessions_test16: sessions_test16.c
 	$(MPICC) $(CFLAGS) $(LDFLAGS) $? $(LDLIBS) -o $@
 
