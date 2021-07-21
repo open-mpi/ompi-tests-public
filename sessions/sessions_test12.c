@@ -28,25 +28,25 @@ int main (int argc, char *argv[])
 
     rc = MPI_Session_create_errhandler (my_session_errhandler, &errhandler);
     if (MPI_SUCCESS != rc) {
-        print_error("Error handler creation failed with rc = %d\n", rc);
+        print_error("Error handler creation failed", rc);
         return -1;
     }
 
     rc = MPI_Info_create (&info);
     if (MPI_SUCCESS != rc) {
-        print_error("Info creation failed with rc = %d\n", rc);
+        print_error("Info creation failed", rc);
         return -1;
     }
 
     rc = MPI_Info_set(info, "mpi_thread_support_level", "MPI_THREAD_MULTIPLE");
     if (MPI_SUCCESS != rc) {
-        print_error("Info key/val set failed with rc = %d\n", rc);
+        print_error("Info key/val set failed", rc);
         return -1;
     }
 
     rc = MPI_Session_init (info, errhandler, &session);
     if (MPI_SUCCESS != rc) {
-        print_error("Session initialization failed with rc = %d\n", rc);
+        print_error("Session initialization failed", rc);
         return -1;
     }
 
@@ -62,7 +62,7 @@ int main (int argc, char *argv[])
 
     rc = MPI_Group_from_session_pset (session, "mpi://WORLD", &group);
     if (MPI_SUCCESS != rc) {
-        print_error("Could not get a group for mpi://WORLD. rc = %d\n", rc);
+        print_error("Could not get a group for mpi://WORLD. ", rc);
         return -1;
     }
 
