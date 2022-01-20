@@ -1,3 +1,6 @@
+/*
+ *  this test disabled for now, has numerous bugs
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
