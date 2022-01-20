@@ -24,7 +24,8 @@ int main (int argc, char *argv[])
     MPI_Group group, group1;
     MPI_Comm comm_world, comm_world1;
     MPI_Info info;
-    int rc, npsets, npsets1, one = 1, i;
+    int rc, npsets, npsets1, one = 1, i, nprocs;
+    int rank, buffer;
 
     rc = MPI_Session_create_errhandler (my_session_errhandler, &errhandler);
     if (MPI_SUCCESS != rc) {
@@ -87,10 +88,18 @@ int main (int argc, char *argv[])
     MPI_Comm_create_from_group (group, "my_world", MPI_INFO_NULL, MPI_ERRORS_RETURN, &comm_world);
     MPI_Group_free (&group);
 
+    MPI_Comm_size(comm_world, &nprocs);
+    MPI_Comm_rank(comm_world, &rank);
+    if (nprocs < 4) {
+        if (rank ==0) {
+            fprintf(stderr, "Test requires at least 4 processes\n");
+        }
+        MPI_Abort(comm_world, -1);
+    }
+
     MPI_Comm_create_from_group (group1, "my_world", MPI_INFO_NULL, MPI_ERRORS_RETURN, &comm_world1);
     MPI_Group_free (&group1);
 
-    int rank, buffer;
     MPI_Comm_rank(comm_world, &rank);
 
     /* Check MPI_Waitall */

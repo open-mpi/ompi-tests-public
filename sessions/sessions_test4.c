@@ -1,3 +1,8 @@
+/*
+ * this test brought up an issue with the MPI-4 Standard.
+ * See issue https://github.com/mpi-forum/mpi-issues/issues/534
+ * Disable this test till the Forum decided how to handle use of MPI_GROUP_NULL.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
