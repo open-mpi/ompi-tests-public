@@ -46,11 +46,15 @@ TEST_PAYLOAD_SIZE=2147483647
 ######################################################################
 BINCC	= \
 	test_alltoall \
+	test_alltoallv \
 	test_allgather test_allgatherv \
 	test_allreduce \
 	test_bcast \
+	test_exscan \
 	test_gather test_gatherv \
 	test_reduce \
+	test_reduce_scatter \
+	test_scan \
 	test_scatter test_scatterv \
 	diagnostic
 
@@ -84,9 +88,17 @@ test_alltoall: common.h test_alltoall.c
 	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_alltoall.c
 	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_alltoall.c
 
+test_alltoallv: common.h test_alltoallv.c
+	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_alltoallv.c
+	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_alltoallv.c
+
 test_bcast: common.h test_bcast.c
 	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_bcast.c
 	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_bcast.c
+
+test_exscan: common.h test_exscan.c
+	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_exscan.c
+	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_exscan.c
 
 test_gather: common.h test_gather.c
 	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_gather.c
@@ -99,6 +111,14 @@ test_gatherv: common.h test_gatherv.c
 test_reduce: common.h test_reduce.c
 	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_reduce.c
 	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_reduce.c
+
+test_reduce_scatter: common.h test_reduce_scatter.c
+	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_reduce_scatter.c
+	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_reduce_scatter.c
+
+test_scan: common.h test_scan.c
+	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_scan.c
+	$(CC) $(CC_FLAGS) -DTEST_UNIFORM_COUNT=$(TEST_UNIFORM_COUNT) -o $@_uniform_count -I. test_scan.c
 
 test_scatter: common.h test_scatter.c
 	$(CC) $(CC_FLAGS) -DTEST_PAYLOAD_SIZE=$(TEST_PAYLOAD_SIZE) -o $@ -I. test_scatter.c
