@@ -41,18 +41,18 @@ int main(int argc, char** argv) {
     // Each rank contribues: TEST_UNIFORM_COUNT elements
     // Largest buffer is   : TEST_UNIFORM_COUNT x world_size
     proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT,
-                                        (size_t)world_size, (size_t)world_size, alg_inflation);
+                                        (size_t)world_size, (size_t)world_size);
     ret += my_c_test_core(MPI_INT, proposed_count * (size_t)world_size, true);
 
     proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT,
-                                        (size_t)world_size, (size_t)world_size, alg_inflation);
+                                        (size_t)world_size, (size_t)world_size);
     ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count * (size_t)world_size, true);
     if (allow_nonblocked) {
         proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT,
-                                            (size_t)world_size, (size_t)world_size, alg_inflation);
+                                            (size_t)world_size, (size_t)world_size);
         ret += my_c_test_core(MPI_INT, proposed_count * (size_t)world_size, false);
         proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT,
-                                            (size_t)world_size, (size_t)world_size, alg_inflation);
+                                            (size_t)world_size, (size_t)world_size);
         ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count * (size_t)world_size, false);
     }
 #endif

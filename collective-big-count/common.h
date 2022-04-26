@@ -390,11 +390,10 @@ int init_environment(int argc, char** argv) {
  * @param proposed_count the count that the caller wishes to use
  * @param mult_root memory multiplier at root (useful in gather-like operations where the root gathers N times the count)
  * @param mult_peer memory multiplier at non-roots (useful in allgather-like operations where the buffer is N times count)
- * @param alg_inflation Inflation expected due to the algorithm we are expecting to call
  * @return proposed count to use in the collective
  */
 size_t calc_uniform_count(size_t datatype_size, size_t proposed_count,
-                          size_t mult_root, size_t mult_peer, double alg_inflation)
+                          size_t mult_root, size_t mult_peer)
 {
     size_t orig_proposed_count = proposed_count;
     size_t orig_mult_root = mult_root;

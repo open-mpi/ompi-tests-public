@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     // Note: Displacement is an int, so the recv buffer cannot be too large as to overflow the int
     // As such divide by the world_size
     proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT / (size_t)world_size,
-                                        (size_t)world_size, 1, 1.0);
+                                        (size_t)world_size, 1);
     ret += my_c_test_core(MPI_INT, proposed_count * (size_t)world_size, MODE_PACKED, true);
     // Adjust these to be V_SIZE_INT - displacement strides so it will pass
     ret += my_c_test_core(MPI_INT,
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     // Note: Displacement is an int, so the recv buffer cannot be too large as to overflow the int
     // As such divide by the world_size
     proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT / (size_t)world_size,
-                                        (size_t)world_size, 1, 1.0);
+                                        (size_t)world_size, 1);
     ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count * (size_t)world_size, MODE_PACKED, true);
     // Adjust these to be V_SIZE_INT - displacement strides so it will pass
     ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX,
@@ -75,17 +75,16 @@ int main(int argc, char** argv) {
                           MODE_SKIP, true);
     if (allow_nonblocked) {
         proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT / (size_t)world_size,
-                                            (size_t)world_size, 1, 1.0);
+                                            (size_t)world_size, 1);
         ret += my_c_test_core(MPI_INT, proposed_count * (size_t)world_size, MODE_PACKED, false);
         // Adjust these to be V_SIZE_INT - displacement strides so it will pass
         ret += my_c_test_core(MPI_INT,
                               (proposed_count - disp_stride*world_size) * (size_t)world_size,
                               MODE_SKIP, false);
-        ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX,
-                              (proposed_count - disp_stride*world_size) * (size_t)world_size,
-                              MODE_SKIP, false);
-        ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count * (size_t)world_size, MODE_PACKED, 
-                              false);
+
+        proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT / (size_t)world_size,
+                                            (size_t)world_size, 1);
+        ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count * (size_t)world_size, MODE_PACKED, false);
         // Adjust these to be V_SIZE_INT - displacement strides so it will pass
         ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX,
                               (proposed_count - disp_stride*world_size) * (size_t)world_size,
