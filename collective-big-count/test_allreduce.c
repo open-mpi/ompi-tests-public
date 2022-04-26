@@ -42,18 +42,18 @@ int main(int argc, char** argv) {
     // Each rank contribues: TEST_UNIFORM_COUNT elements
     // Largest buffer is   : TEST_UNIFORM_COUNT elements
     proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT,
-                                        2, 2, 1.0); // 1 send, 1 recv buffer each
+                                        2, 2); // 1 send, 1 recv buffer each
     ret += my_c_test_core(MPI_INT, proposed_count, true);
 
     proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT,
-                                        2, 2, 1.0); // 1 send, 1 recv buffer each
+                                        2, 2); // 1 send, 1 recv buffer each
     ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count, true);
     if (allow_nonblocked) {
         proposed_count = calc_uniform_count(sizeof(int), TEST_UNIFORM_COUNT,
-                                            2, 2, 1.0); // 1 send, 1 recv buffer each
+                                            2, 2); // 1 send, 1 recv buffer each
         ret += my_c_test_core(MPI_INT, proposed_count, false);
         proposed_count = calc_uniform_count(sizeof(double _Complex), TEST_UNIFORM_COUNT,
-                                            2, 2, 1.0); // 1 send, 1 recv buffer each
+                                            2, 2); // 1 send, 1 recv buffer each
         ret += my_c_test_core(MPI_C_DOUBLE_COMPLEX, proposed_count, false);
     }
 #endif
