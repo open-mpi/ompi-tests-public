@@ -111,5 +111,3 @@ Rank  1: PASSED
 Collectives missing from this test suite:
   * Barrier (N/A)
   * Alltoallv
-  * Reduce_scatter
-  * Scan / Exscan

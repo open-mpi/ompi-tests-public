@@ -32,6 +32,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define PRIME_MODULUS 997
+
 /*
  * Debugging messages
  * 0 = off
