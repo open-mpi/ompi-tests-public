@@ -31,11 +31,11 @@ void print_results() {
 
     if ( 0 != rank ) return;
 
-    if ( 0 == event_dropped_cb_success ) 
-        error_count++;
+    //if ( 0 == event_dropped_cb_success ) 
+    //    error_count++;
 
     print_pf_result("MPI_T_event_set_dropped_handler", "Event Set Dropped Callback Success", event_set_dropped_handler_success);
-    print_pf_result("MPI_T_event_set_dropped_handler", "Event Set Dropped Callback Called", event_dropped_cb_success);
+    //print_pf_result("MPI_T_event_set_dropped_handler", "Event Set Dropped Callback Called", event_dropped_cb_success);
 
     fprintf(outstream, "%-*s - %-*s : %6d\n", func_width, "TOTAL ERROR COUNT", metric_width, "", error_count);
 
