@@ -39,6 +39,17 @@ The behavior of each test can be modified with the following command line argume
 
 ## Event Callback and Read Data Example
 The events_example.c file has been provided as an example of registering an event callback and reading event data.
+It can be used with the Open MPI '--mca pml ob1' mpiexec flags to generate MPI_T Event callback behavior and
+confirm callback functionality.
+
+## Known Open MPI MPI_T Event test failures
+
+- MPI_T_event_handle_free : user_data is not accessible in callback function
+- MPI_T_event_handle_set_info, MPI_T_event_callback_set_info : keys are not added to Info objects
+
+## Possible Additional Tests
+
+- MPI_T_event_set_dropped_handler : Functionality is not currently implemented for dropped events in Open MPI, but a test to co nfirm that the dropped handler is called could be useful.
 
 ## Test Suite And MPI Implementations
 
