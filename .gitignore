@@ -32,3 +32,5 @@ collective-big-count/test_reduce
 collective-big-count/test_scatter
 collective-big-count/test_scatterv
 collective-big-count/*_uniform_count
+
+comm_split_type/cmsplit_type
