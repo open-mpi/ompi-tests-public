@@ -124,6 +124,18 @@ sub check_lib_for_bad_exports {
     @symbols = grep(!/^tm_/, @symbols);  # tempted to require ompi_ here
     @symbols = grep(!/^mca_/, @symbols);
     @symbols = grep(!/^smpi_/, @symbols);
+    @symbols = grep(!/^MPL_/, @symbols);
+    @symbols = grep(!/^MPLI_/, @symbols);
+    @symbols = grep(!/^PQ_/, @symbols);
+
+    # libhwloc can have hwloc_ symbols of course, and
+    # libpmix can have pmix_*:
+    if ($lib =~ /libhwloc\./) {
+        @symbols = grep(!/^hwloc_/, @symbols);
+    }
+    if ($lib =~ /libpmix\./) {
+        @symbols = grep(!/^pmix[0-9]*_/, @symbols);
+    }
 
     @symbols = grep(!/^_fini$/, @symbols);
     @symbols = grep(!/^_init$/, @symbols);
