@@ -51,6 +51,8 @@ int main(int argc, char *argv[])
     MPI_Comm comm;
     MPI_Info info;
     int ret;
+    int value = 0;
+    int expected_value = 3;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &mcw_rank);
@@ -178,6 +180,60 @@ int main(int argc, char *argv[])
         }
     }
     MPI_Info_free(&info);
+
+    sync_hr();
+
+    /*
+     * Test MPI_COMM_TYPE_HW_GUIDED:
+     *  - Test with "mpi_hw_resource_type" = "mpi_shared_memory"
+     *  - Mix in some MPI_UNDEFINED values to make sure those are handled properly
+     */
+    expected_value = 3;
+    if (expected_value > mcw_size) {
+        expected_value = mcw_size;
+    }
+    MPI_Info_create(&info);
+    MPI_Info_set(info, "mpi_hw_resource_type", "mpi_shared_memory");
+    if (mcw_rank == 0 && verbose) {
+        printf("MPI_COMM_TYPE_HW_GUIDED: Trying MPI Standard value %s with some MPI_UNDEFINED\n", "mpi_shared_memory");
+    }
+    if (mcw_rank < expected_value) {
+        ret = MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_HW_GUIDED, 0, info, &comm);
+    } else {
+        ret = MPI_Comm_split_type(MPI_COMM_WORLD, MPI_UNDEFINED, 0, info, &comm);
+    }
+    if (ret != MPI_SUCCESS) {
+        printf("MPI_COMM_TYPE_HW_GUIDED (%s) failed\n", split_topo[i]);
+        errs++;
+    } else if (comm != MPI_COMM_NULL) {
+        MPI_Comm_rank(comm, &rank);
+        MPI_Comm_size(comm, &size);
+        value = 1;
+        if (rank == 0 && verbose) {
+            printf("MPI_COMM_TYPE_HW_GUIDED (%s): %d/%d Created shared subcommunicator of size %d\n",
+                   "mpi_shared_memory", mcw_rank, mcw_size, size);
+        }
+        MPI_Comm_free(&comm);
+    } else if (verbose) {
+        value = 0;
+        printf("MPI_COMM_TYPE_HW_GUIDED (%s): %d/%d Returned MPI_COMM_NULL\n",
+               "mpi_shared_memory", mcw_rank, mcw_size);
+    }
+    MPI_Info_free(&info);
+
+    if (mcw_rank == 0) {
+        MPI_Reduce(MPI_IN_PLACE, &value, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+        if (expected_value != value) {
+            printf("MPI_COMM_TYPE_HW_GUIDED (%s): Failed: Verify expected %d == actual %d\n",
+                   "mpi_shared_memory", expected_value, value);
+        } else if (verbose) {
+            printf("MPI_COMM_TYPE_HW_GUIDED (%s): Passed: Verify expected %d == actual %d\n",
+                   "mpi_shared_memory", expected_value, value);
+        }
+    } else {
+        MPI_Reduce(&value, NULL, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
 
     sync_hr();
 
