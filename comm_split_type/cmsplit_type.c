@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#define MAX_NUM_LEVELS 32
+
 static const char *split_topo[] = {
                                    "mpi_shared_memory",
                                    "hwthread",
@@ -53,6 +55,12 @@ int main(int argc, char *argv[])
     int ret;
     int value = 0;
     int expected_value = 3;
+    MPI_Comm hwcomm[MAX_NUM_LEVELS];
+    int level_num = 0;
+    char resource_type[100] = "";
+    int has_key = 0;
+    int old_size;
+    int new_size, new_rank;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &mcw_rank);
@@ -236,7 +244,7 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
 
     sync_hr();
-
+    
     /*
      * Test MPI_COMM_TYPE_HW_GUIDED:
      *  - info with correct key, but different values a different ranks, it must throw an error
@@ -293,26 +301,32 @@ int main(int argc, char *argv[])
 #endif
 
     /* Test MPI_COMM_TYPE_HW_UNGUIDED:
-     *  - TODO
+     *  - Simple single iteration
      */
-#if 0
-    if (mcw_rank == 0 && verbose)
+    if (mcw_rank == 0 && verbose) {
         printf("MPI_COMM_TYPE_HW_UNGUIDED: Trying basic\n");
+    }
     MPI_Info_create(&info);
     MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_HW_UNGUIDED, 0, info, &comm);
     if (comm != MPI_COMM_NULL) {
-        int newsize;
-        MPI_Comm_size(comm, &newsize);
-        if (!(newsize < mcw_size)) {
+        resource_type[0] = '\0';
+        has_key = 0;
+
+        MPI_Comm_size(comm, &new_size);
+        MPI_Comm_rank(comm, &new_rank);
+        if (!(new_size < mcw_size)) {
             printf("MPI_COMM_TYPE_HW_UNGUIDED: Expected comm to be a proper sub communicator\n");
             errs++;
         }
-        char resource_type[100] = "";
-        int has_key = 0;
         MPI_Info_get(info, "mpi_hw_resource_type", 100, resource_type, &has_key);
         if (!has_key || strlen(resource_type) == 0) {
             printf("MPI_COMM_TYPE_HW_UNGUIDED: info for mpi_hw_resource_type not returned\n");
             errs++;
+        }
+
+        if (new_rank == 0 && verbose) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED (%s): %d/%d -> %d/%d Created shared subcommunicator\n",
+                   resource_type, mcw_rank, mcw_size, new_rank, new_size);
         }
 
         MPI_Comm_free(&comm);
@@ -320,7 +334,110 @@ int main(int argc, char *argv[])
     else if (mcw_rank == 0 && verbose) {
         printf("MPI_COMM_TYPE_HW_UNGUIDED: Returned MPI_COMM_NULL\n");
     }
-#endif
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    sync_hr();
+
+    /* Test MPI_COMM_TYPE_HW_UNGUIDED:
+     *  - Loop until all are NULL
+     *  Example 7.4 from MPI 4.0 standard
+     */
+    hwcomm[level_num] = MPI_COMM_WORLD;
+
+    while((hwcomm[level_num] != MPI_COMM_NULL) && (level_num < MAX_NUM_LEVELS-1)) {
+        MPI_Comm_rank(hwcomm[level_num], &rank);
+        if (rank == 0 && verbose) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: (iter = %d) %d/%d Trying loop\n", level_num, mcw_rank, mcw_size);
+        }
+        MPI_Info_create(&info);
+        MPI_Comm_split_type(hwcomm[level_num],
+                            MPI_COMM_TYPE_HW_UNGUIDED,
+                            rank, info, &hwcomm[level_num+1]);
+        if (hwcomm[level_num+1] == MPI_COMM_NULL) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: (iter = %d) %d/%d Returned MPI_COMM_NULL\n", level_num, mcw_rank, mcw_size);
+        } else if (hwcomm[level_num+1] == MPI_COMM_SELF) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: (iter = %d) %d/%d Returned MPI_COMM_SELF\n", level_num, mcw_rank, mcw_size);
+        } else {
+            MPI_Comm_rank(hwcomm[level_num+1], &rank);
+            MPI_Comm_size(hwcomm[level_num],   &old_size);
+            MPI_Comm_size(hwcomm[level_num+1], &size);
+            if (!(size < old_size)) {
+                printf("MPI_COMM_TYPE_HW_UNGUIDED: Expected comm to be a proper sub communicator\n");
+                errs++;
+            }
+            resource_type[0] = '\0';
+            has_key = 0;
+            MPI_Info_get(info, "mpi_hw_resource_type", 100, resource_type, &has_key);
+            if (!has_key || strlen(resource_type) == 0) {
+                printf("MPI_COMM_TYPE_HW_UNGUIDED: info for mpi_hw_resource_type not returned\n");
+                errs++;
+            }
+
+            if (rank == 0 && verbose) {
+                printf("MPI_COMM_TYPE_HW_UNGUIDED: (iter = %d) %d/%d -> %d/%d Returned subcommunicator of (%s)\n",
+                       level_num,
+                       mcw_rank, mcw_size, rank, size,
+                       resource_type);
+            }
+        }
+        level_num++;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    sync_hr();
+
+    /*
+     * Test MPI_COMM_TYPE_HW_UNGUIDED:
+     *  - Single step
+     *  - Mix in some MPI_UNDEFINED values to make sure those are handled properly
+     */
+    expected_value = 3;
+    if (expected_value > mcw_size) {
+        expected_value = mcw_size;
+    }
+    MPI_Info_create(&info);
+    if (mcw_rank == 0 && verbose) {
+        printf("MPI_COMM_TYPE_HW_UNGUIDED: Trying MPI Standard value %s with some MPI_UNDEFINED\n", "mpi_shared_memory");
+    }
+    if (mcw_rank < expected_value) {
+        ret = MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_HW_UNGUIDED, 0, info, &comm);
+    } else {
+        ret = MPI_Comm_split_type(MPI_COMM_WORLD, MPI_UNDEFINED, 0, info, &comm);
+    }
+    if (ret != MPI_SUCCESS) {
+        printf("MPI_COMM_TYPE_HW_UNGUIDED (%s) failed\n", split_topo[i]);
+        errs++;
+    } else if (comm != MPI_COMM_NULL) {
+        resource_type[0] = '\0';
+        has_key = 0;
+
+        MPI_Comm_rank(comm, &rank);
+        MPI_Comm_size(comm, &new_size);
+        if (!(new_size < mcw_size)) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: Expected comm to be a proper sub communicator\n");
+            errs++;
+        }
+        MPI_Info_get(info, "mpi_hw_resource_type", 100, resource_type, &has_key);
+        if (!has_key || strlen(resource_type) == 0) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: info for mpi_hw_resource_type not returned\n");
+            errs++;
+        }
+        if (rank == 0 && verbose) {
+            printf("MPI_COMM_TYPE_HW_UNGUIDED: %d/%d -> %d/%d Created shared subcommunicator of (%s)\n",
+                   mcw_rank, mcw_size, rank, new_size, resource_type);
+        }
+        MPI_Comm_free(&comm);
+        value = 1;
+    } else if (verbose) {
+        value = 0;
+        printf("MPI_COMM_TYPE_HW_UNGUIDED: %d/%d Returned MPI_COMM_NULL\n",
+               mcw_rank, mcw_size);
+    }
+    MPI_Info_free(&info);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    sync_hr();
 
     /*
      * All done - figure out if we passed
