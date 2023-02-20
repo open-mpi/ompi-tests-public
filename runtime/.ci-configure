@@ -1,0 +1,15 @@
+#
+# Open MPI is built with the following options:
+#   ./configure --prefix=/opt/ci/support/exports/ompi --disable-cuda --disable-nvml --with-cuda=no --without-hcoll
+#
+# Additional options can be added by listing them.
+# Options can be listed as either:
+#  - One option per line
+#  - Multiple options per line
+# Note: Line continutions are not supported
+#
+# Enable Debug
+--enable-debug
+# With Python Bindings
+# Need to install Cython on the CI machine
+#--enable-python-bindings
