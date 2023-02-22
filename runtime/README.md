@@ -37,5 +37,5 @@ The CI infrastructure defines the following environment variables to be used in 
     - CI will call this exactly one time (with a timeout in case it hangs).
     - If the script returns `0` then it is considered successful. Otherwise it is considered failed.
  4. Add your directory name to the `.ci-tests` file in this directory in the order that they should be executed.
-    - Note that adding the directory is not sufficient to have CI run the test, it must be in the file.
+    - Note that adding the directory is not sufficient to have CI run the test, it must be in the `.ci-tests` file.
     - Comments (starting with `#`) are allowed.
