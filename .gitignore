@@ -38,3 +38,5 @@ comm_split_type/cmsplit_type
 singleton/hello_c
 singleton/simple_spawn
 singleton/simple_spawn_multiple
+
+.vscode
