@@ -95,6 +95,6 @@ int main(int argc, char *argv[]) {
 
     if (0 == myrank) {TEST_RAN_TO_COMPLETION();}
 
-    MPI_Finalize ();
+    MPI_Finalize();
     return 0;
 }
