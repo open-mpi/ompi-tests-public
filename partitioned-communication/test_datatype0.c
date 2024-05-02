@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     if (myrank == 0) {TEST_RAN_TO_COMPLETION();}
 
-    MPI_Finalize ();
+    MPI_Finalize();
     return 0;
 
 }
