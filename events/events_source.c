@@ -36,7 +36,7 @@ void test_source() {
     int num_sources, source_index;
     MPI_Count timestamp;
     char name[MAX_STRING], desc[MAX_STRING];
-    int name_len, desc_len;
+    int name_len = MAX_STRING, desc_len = MAX_STRING;
     MPI_Count ticks_per_second, max_ticks;
     MPI_Info info;
     MPI_T_source_order ordering;
