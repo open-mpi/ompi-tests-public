@@ -1,0 +1,16 @@
+Makefile
+aclocal.m4
+autom4te.cache
+config
+config.log
+config.status
+configure
+src/Makefile
+src/stamp-h1
+src/test_config.h
+**.in
+**~
+**.o
+src/alltoallv_ddt
+src/sanity
+src/.deps
