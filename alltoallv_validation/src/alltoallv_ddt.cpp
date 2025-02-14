@@ -34,6 +34,8 @@ int execute_test(struct run_config *run);
 #define VERBOSE_LEVEL_LOUD (user.verbose >= 2)
 #define VERBOSE_LEVEL_VERY_LOUD (user.verbose >= 3)
 
+enum test_coll { TEST_ALLTOALL, TEST_ALLTOALLV };
+
 struct user_config
 {
     int seed = 0;
@@ -50,6 +52,9 @@ struct user_config
     int verbose = 0;
     int only_high = 0;
     int only_low = 0;
+
+    /* collective */
+    int test_coll = TEST_ALLTOALLV;
 };
 
 static struct user_config user;
@@ -71,6 +76,11 @@ void dump_user_config(struct user_config *conf) {
     std::cout << "prob-rank: " << conf->prob_rank << "\n";
     std::cout << "prob-world: " << conf->prob_world << "\n";
     std::cout << "verbose: " << conf->verbose << "\n";
+    if ( conf->test_coll == TEST_ALLTOALL ) {
+        std::cout << "collective: MPI_Alltoall" << "\n";
+    } else if ( conf->test_coll == TEST_ALLTOALLV ) {
+        std::cout << "collective: MPI_Alltoallv" << "\n";
+    }
 }
 
 void dump_type_info(MPI_Datatype dtype, const char *label) {
@@ -104,26 +114,29 @@ struct run_config
     MPI_Datatype rdtype;
     int sdcount_mult;
     int rdcount_mult;
+    const char* coll;
 };
 
 void print_help()
 {
-    printf("Test alltoallv using various ddt's and validate results.\n");
+    printf("Test alltoall/alltoallv using various ddt's and validate results.\n");
     printf("This test uses pseudo-random sequences from C++'s mt19937 generator.\n");
     printf("The test (but not necessarily the implementation) is deterministic\n");
     printf("when the options and number of ranks remain the same.\n");
     printf("Options:\n");
-    printf("\t [-s|--seed <seed>]           Change the seed to shuffle which datapoints are exchanged\n");
-    printf("\t [-c|--item-count <citems>]   Each rank will create <citems> to consider for exchange (default=10).\n");
-    printf("\t [-i|--prob-item <prob>]      Probability that rank r will send item k to rank q. (0.50)\n");
-    printf("\t [-r|--prob-rank <prob>]      Probability that rank r will send anything to rank q. (0.90)\n");
-    printf("\t [-w|--prob-world <prob>]     Probability that rank r will do anything at all. (0.95)\n");
+    printf("\t [-A|--coll alltoall|alltoallv  Pick which collective to test.\n");
     printf("\t [-t|--iters <iters>]         The number of iterations to test each dtype.\n");
     printf("\t [-o|--only <high,low>]       Only execute a specific test signified by the pair high,low.\n");
     printf("\t                              low=0 means run all tests in that high level\n");
-    printf("\t [-v|--verbose=level ]        Set verbosity during execution (0=quiet (default). 1,2,3: loud).\n");
+    printf("\t [-v|--verbose <level> ]      Set verbosity during execution (0=quiet (default). 1,2,3: loud).\n");
     printf("\t [-h|--help]                  Print this help and exit.\n");
     printf("\t [-z|--verbose-rank]          Only the provided rank will print.  Default=0.  ALL = -1.\n");
+    printf("\t [-c|--item-count <citems>]   Each rank will create <citems> to consider for exchange (default=10).\n");
+    printf("\nThe following options only have an effect when using alltoallv:\n");
+    printf("\t [-s|--seed <seed>]           Change the seed to shuffle which datapoints are exchanged\n");
+    printf("\t [-i|--prob-item <prob>]      Probability that rank r will send item k to rank q. (0.50)\n");
+    printf("\t [-r|--prob-rank <prob>]      Probability that rank r will send anything to rank q. (0.90)\n");
+    printf("\t [-w|--prob-world <prob>]     Probability that rank r will do anything at all. (0.95)\n");
 
     printf("\n");
 }
@@ -748,11 +761,19 @@ int execute_test(struct run_config *run) {
         ERROR_CHECK(err, on_error);
 
         /* exchange data */
-        err = MPI_Alltoallv(
-            smsg_buf+lbs_shift, sendcounts, sdispls, run->sdtype,
-            rmsg_buf+lbr_shift, recvcounts, rdispls, run->rdtype,
-            MPI_COMM_WORLD
-            );
+        if (TEST_ALLTOALLV == run->user->test_coll) {
+            err = MPI_Alltoallv(
+                smsg_buf+lbs_shift, sendcounts, sdispls, run->sdtype,
+                rmsg_buf+lbr_shift, recvcounts, rdispls, run->rdtype,
+                MPI_COMM_WORLD
+                );
+        } else {
+            err = MPI_Alltoall(
+                smsg_buf+lbs_shift, sendcounts[0], run->sdtype,
+                rmsg_buf+lbr_shift, recvcounts[0], run->rdtype,
+                MPI_COMM_WORLD
+                );
+        }
         ERROR_CHECK(err, on_error);
         err = check_guard_bytes( msg_guards,  guard_len, 127, "message buffer3" );
         err |= check_guard_bytes( valb_guards, guard_len, 128, "validation buffer" );
@@ -831,7 +852,8 @@ int main(int argc, char *argv[]) {
         { "only",       required_argument,  0, 'o' },
         { "verbose",    required_argument,  0, 'v' },
         { "verbose-rank", required_argument, 0, 'z' },
-        { "help",       no_argument,        0, 'h' }
+        { "help",       no_argument,        0, 'h' },
+        { "coll",       required_argument,  0, 'A' }
     };
 
     int opt;
@@ -842,7 +864,7 @@ int main(int argc, char *argv[]) {
     while (1)
     {
         char *s1, *s2;
-        opt = getopt_long(argc, argv, "s:c:i:r:w:t:v:hz:", long_options, &option_index);
+        opt = getopt_long(argc, argv, "s:c:i:r:w:t:v:hz:A:", long_options, &option_index);
         if (opt == -1) break;
         switch(opt) {
         case 's':
@@ -876,6 +898,13 @@ int main(int argc, char *argv[]) {
         case 'v':
             user.verbose = atoi(optarg);
             break;
+        case 'A':
+            if (strcmp(optarg, "alltoall") == 0 ) {
+                user.test_coll = TEST_ALLTOALL;
+            } else {
+                user.test_coll = TEST_ALLTOALLV;
+            }
+            break;
         case 'h':
             if (rank==0) {
                 print_help();
@@ -900,6 +929,12 @@ int main(int argc, char *argv[]) {
 
     if (VERBOSE_LEVEL_DEFAULT && (user.only_high || user.only_low)) {
         printf("Requested only test %d,%d\n",user.only_high,user.only_low);
+    }
+
+    if (TEST_ALLTOALL == user.test_coll) {
+        user.prob_item = 1.001;
+        user.prob_rank = 1.001;
+        user.prob_world = 1.001;
     }
 
     if (VERBOSE_LEVEL_LOUD) {
