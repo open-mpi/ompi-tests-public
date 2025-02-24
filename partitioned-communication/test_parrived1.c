@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     for (i = 0; i < PARTITIONS * COUNT; ++i) message[i] = 0;
 
-    MPI_Request request;
+    MPI_Request request = MPI_REQUEST_NULL;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &provided); 
     if (provided < MPI_THREAD_SERIALIZED) MPI_Abort(MPI_COMM_WORLD , EXIT_FAILURE); MPI_Comm_rank(MPI_COMM_WORLD , &myrank);
 
