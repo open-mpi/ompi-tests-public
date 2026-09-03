@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
         MPI_Start(&request0); 
         MPI_Start(&request1); 
 
-        while (!flag0 && !flag1) {
+        while (!flag0 || !flag1) {
             MPI_Test(&request0, &flag0, MPI_STATUS_IGNORE); 
             MPI_Test(&request1, &flag1, MPI_STATUS_IGNORE); 
         }
