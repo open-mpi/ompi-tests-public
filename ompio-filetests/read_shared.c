@@ -31,6 +31,7 @@ int main ( int argc, char * argv[] )
     MPI_File file1;
     int inarr[12], count;
     int veriarr[72];
+    int total = 0;
 
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -112,6 +113,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -120,8 +122,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 4 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
       
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -162,6 +166,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 /*******************************************************************************/	
@@ -216,6 +221,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -254,6 +260,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         
 
@@ -298,6 +305,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
     }
@@ -342,14 +350,17 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	printf("    verifying status field.................");
 	MPI_Get_elements ( &stats[0], MPI_INT, &count );
 	if ( count == 4 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
        
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -386,6 +397,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("readfile1.out");
     }
@@ -394,7 +406,7 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }
 
 static int intcompare (const void *p, const void *q)

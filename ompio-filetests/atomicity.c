@@ -33,6 +33,7 @@ int main ( int argc, char * argv[] )
     MPI_Datatype newtype;
     MPI_Request req;
     int *writebuf=NULL, *readbuf=NULL;
+    int total = 0;
     
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -145,8 +146,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         unlink("testfile1.out");
     }
 
@@ -248,8 +251,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
         unlink("testfile1.out");
     }
@@ -342,8 +347,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
         unlink("testfile1.out");
     }
@@ -437,8 +444,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         unlink("testfile1.out");
     }
 
@@ -448,9 +457,5 @@ int main ( int argc, char * argv[] )
   MPI_Finalize ();
 #endif
 
-  return 0;
+    return total;
 }
-
-
-
-

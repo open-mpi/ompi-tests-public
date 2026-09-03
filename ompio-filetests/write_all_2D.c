@@ -50,6 +50,7 @@ static int free2D(int ***array) {
 
 int write_all_2D (MPI_Comm comm, int root ) 
 {
+  int total = 0;
 
   int i, j, ret;
   int nx , ny;
@@ -185,8 +186,9 @@ int write_all_2D (MPI_Comm comm, int root )
       }
       else {
           printf("false\n");
+          total++;
       }
   }
 
-  return 0;
+  return total;
 }

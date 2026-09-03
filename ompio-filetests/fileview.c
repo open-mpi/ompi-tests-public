@@ -42,6 +42,7 @@ int main ( int argc, char * argv[] )
     int blength[2], displ;
     MPI_Aint displs[2];
     char *data=NULL;
+    int total = 0;
     
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -120,11 +121,13 @@ int main ( int argc, char * argv[] )
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 /********************************************************************************/
 /********************************************************************************/
 /********************************************************************************/
@@ -158,11 +161,13 @@ int main ( int argc, char * argv[] )
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 	/* clean up the files generated in this test case. */
 	unlink ("readfile1.out");
@@ -171,7 +176,7 @@ int main ( int argc, char * argv[] )
 /********************************************************************************/
 /********************************************************************************/
     if ( rank == root ) {
-	// This next test case is based on an bug report on the mailing list 
+	// This next test case is based on an bug report on the mailing list
 	printf("    setting view using create_subarray.....");
         
         double *data;
@@ -217,6 +222,7 @@ int main ( int argc, char * argv[] )
             printf("Extents of subtype representing file on disk size %d actual size =%ld \n", size, off);
 #endif
             printf("false\n");
+            total++;
         }
         MPI_File_close(&file1);
         
@@ -279,12 +285,13 @@ int main ( int argc, char * argv[] )
 
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
-
+	    total++;
+	}
 
 /********************************************************************************/
 /********************************************************************************/
@@ -353,8 +360,9 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
-	
+
 	unlink("writefile3.out");
 /********************************************************************************/
 /********************************************************************************/
@@ -398,9 +406,10 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
-	
-	
+
+
 /********************************************************************************/
 /********************************************************************************/
 /********************************************************************************/
@@ -443,8 +452,9 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
-	
+
 /********************************************************************************/
 /********************************************************************************/
 /********************************************************************************/
@@ -496,8 +506,9 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
-	
+
 /********************************************************************************/
 /********************************************************************************/
 /********************************************************************************/
@@ -532,16 +543,18 @@ int main ( int argc, char * argv[] )
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
-	
+	    total++;
+	}
+
 	/* clean up the files generated in this test case. */
 	unlink ("writefile1.out");
     }
-    
+
     MPI_Type_free ( &fview2);
     MPI_Type_free ( &fview3);
     MPI_Type_free ( &tmp2);
@@ -600,6 +613,7 @@ int main ( int argc, char * argv[] )
 	    }
 	    else {
 		printf ("false %d\n", (int) size);
+		total++;
 	    }
 	    /* clean up the files generated in this test case. */
 	    unlink ("writefile1.out");
@@ -628,11 +642,13 @@ int main ( int argc, char * argv[] )
     }
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 	printf("    verifying etype envelope...............");
     }
@@ -653,12 +669,14 @@ int main ( int argc, char * argv[] )
     }
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
-        if ( globalret == 0 )
+    if ( rank == root )  {
+	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
-        
+	    total++;
+	}
+
 	printf("    verifying ftype envelope...............");
     }
     
@@ -678,11 +696,13 @@ int main ( int argc, char * argv[] )
     }
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
     
-    if ( rank == root )  { 
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
     }
     MPI_File_close ( &file1 );
 
@@ -695,5 +715,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
     
-    return 0;
+    return total;
 }

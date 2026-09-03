@@ -39,6 +39,7 @@ int main ( int argc, char * argv[] )
     MPI_Request req[2];
     MPI_Status stats[2];
     void *data = NULL;
+    int total = 0;
 
 
 #ifndef GLOBAL
@@ -140,6 +141,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -148,8 +150,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -192,6 +196,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 /*******************************************************************************/	
@@ -233,6 +238,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("writefile1.out");	
 /*******************************************************************************/	
@@ -290,6 +296,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("writefile1.out");	
 /*******************************************************************************/	
@@ -344,6 +351,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("writefile1.out");	
 	close ( fh );
@@ -407,6 +415,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
     }
 
@@ -417,7 +426,7 @@ int main ( int argc, char * argv[] )
 /*******************************************************************************/	
 /*******************************************************************************/	
     /* Another test case based on a user report */
-    write_all_2D ( comm, root);
+    total += write_all_2D ( comm, root);
 
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -466,6 +475,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("writefile2.out");
@@ -528,6 +538,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("writefile3.out");	
     }
@@ -630,6 +641,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -638,8 +650,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -689,6 +703,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("writefile2.out");
@@ -738,6 +753,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -746,8 +762,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -796,6 +814,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("writefile2.out");
@@ -815,5 +834,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }

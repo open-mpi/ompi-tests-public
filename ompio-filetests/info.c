@@ -39,6 +39,7 @@ int main ( int argc, char * argv[] )
     MPI_Aint displs[2];
     MPI_Info info;
     int print_line_break=0;
+    int total = 0;
 
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -117,6 +118,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         unlink("writefile1.out");
     }
@@ -173,6 +175,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         unlink("writefile1.out");
     }
@@ -231,6 +234,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         unlink("writefile1.out");
     }
@@ -320,6 +324,7 @@ int main ( int argc, char * argv[] )
             }
             else {
                 printf("false\n");
+                total++;
             }
             unlink("writefile1.out");
         }
@@ -366,6 +371,7 @@ int main ( int argc, char * argv[] )
             }
             else {
                 printf("false\n");
+                total++;
             }
             unlink("writefile1.out");
         }
@@ -381,5 +387,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }

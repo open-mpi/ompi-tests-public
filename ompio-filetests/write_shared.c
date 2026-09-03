@@ -30,6 +30,7 @@ int main ( int argc, char * argv[] )
     MPI_Request reqs[3];    
     MPI_File file1;
     int inarr[12], count;
+    int total = 0;
 
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -95,6 +96,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -103,8 +105,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 4 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 	unlink("writefile1.out");
     }
@@ -158,6 +162,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	unlink("writefile1.out");
 /*******************************************************************************/	
@@ -211,8 +216,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret1 == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
 	unlink("writefile1.out");
 
@@ -263,6 +270,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("writefile2.out");
@@ -315,6 +323,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -323,8 +332,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &stats[0], MPI_INT, &count );
 	if ( count == 4 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 	unlink("writefile1.out");
     }
@@ -377,6 +388,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("writefile2.out");
@@ -386,7 +398,7 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }
 
 static int intcompare (const void *p, const void *q)

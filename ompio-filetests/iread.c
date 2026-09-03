@@ -29,6 +29,7 @@ int main ( int argc, char * argv[] )
     MPI_File file1;
     int readarr[6];
     MPI_Request req;
+    int total = 0;
     
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -107,8 +108,10 @@ int main ( int argc, char * argv[] )
 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /******************************************************************************/
 /******************************************************************************/
@@ -117,8 +120,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 6 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /******************************************************************************/
 /******************************************************************************/
@@ -169,8 +174,10 @@ int main ( int argc, char * argv[] )
 
 	if ( localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	unlink ( "bigfile.out");
 
 /******************************************************************************/
@@ -188,6 +195,7 @@ int main ( int argc, char * argv[] )
         }
         else {
             printf("false\n");
+            total++;
         }
 /******************************************************************************/
 /******************************************************************************/
@@ -240,10 +248,12 @@ int main ( int argc, char * argv[] )
         }
 
 
-	if ( localret == 0 ) 
+	if ( localret == 0 )
 	    printf("working\n");
-	else 
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	free ( reqs );
         free ( bigreadarr );
 	unlink ("writefile3.out");
@@ -275,8 +285,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
        /* clean up the files generated in this test case. */
 	unlink ("readfile1.out");
@@ -286,9 +298,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }
-
-
-
-

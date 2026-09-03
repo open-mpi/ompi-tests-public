@@ -37,6 +37,7 @@ int main ( int argc, char * argv[] )
     int blength[2], displ;
     MPI_Aint displs[2];
     MPI_Offset fsize, offset;
+    int total = 0;
     
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
@@ -92,8 +93,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
     }
 
     if ( rank == root )  { 
@@ -138,8 +141,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
         /* clean up the files generated in this test case. */
         unlink ("writefile1.out");
@@ -166,6 +171,7 @@ int main ( int argc, char * argv[] )
 
         if ( 100 != fsize || ret != MPI_SUCCESS || localret != MPI_SUCCESS ) {
             printf("false\n");
+            total++;
         }
         else {
             printf("working\n");
@@ -178,6 +184,7 @@ int main ( int argc, char * argv[] )
 
         if ( 100 != fsize || ret != MPI_SUCCESS || localret != MPI_SUCCESS ) {
             printf("false\n");
+            total++;
         }
         else {
             printf("working\n");
@@ -244,6 +251,7 @@ int main ( int argc, char * argv[] )
 	    printf("working\n");
 	} else {
 	    printf("false\n");
+	    total++;
 	}
 
 	printf("   using small file with SEEK_END..........");
@@ -255,6 +263,7 @@ int main ( int argc, char * argv[] )
 	    printf("working\n");
 	} else {
 	    printf("false\n");
+	    total++;
 	}
 
 	printf("   using larger file with SEEK_SET.........");
@@ -266,6 +275,7 @@ int main ( int argc, char * argv[] )
 	    printf("working\n");
 	} else {
 	    printf("false\n");
+	    total++;
 	}
 	printf("   using larger file with SEEK_END.........");
 	offset = 0;
@@ -276,6 +286,7 @@ int main ( int argc, char * argv[] )
 	    printf("working\n");
 	} else {
 	    printf("false\n");
+	    total++;
 	}
 
 	unlink ("smallfile.txt");
@@ -332,8 +343,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -383,8 +396,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -436,8 +451,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -489,8 +506,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -540,8 +559,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -593,8 +614,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ( "writefile.out");
@@ -653,8 +676,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -693,8 +718,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -735,8 +762,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -777,8 +806,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -817,8 +848,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -859,8 +892,10 @@ int main ( int argc, char * argv[] )
         }
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
     }    
     MPI_Barrier ( comm );
@@ -930,8 +965,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ("writefile.out");
@@ -991,8 +1028,10 @@ int main ( int argc, char * argv[] )
     if ( rank == root )  { 
 	if ( globalret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
         
         /* clean up the files generated in this test case. */
         unlink ("writefile.out");
@@ -1063,6 +1102,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         // unlink ("readfile.out");
     }
@@ -1108,6 +1148,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         unlink ("readfile.out");
     }
@@ -1115,8 +1156,8 @@ int main ( int argc, char * argv[] )
 #ifndef GLOBAL
     MPI_Finalize ();
 #endif
-    
-    return 0;
+
+    return total;
 }
 
 /********************************************************************************/

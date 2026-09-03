@@ -25,6 +25,7 @@ int main ( int argc, char * argv[] )
 #endif
 
     int fd, rank, size, i, ret, ret2, localret, globalret, closeret;
+    int total = 0;
     MPI_File file1=MPI_FILE_NULL, file2=MPI_FILE_NULL;
 
     
@@ -59,12 +60,13 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
     closeret = MPI_File_close ( &file1 );
@@ -83,16 +85,17 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
     MPI_File_close ( &file1 );
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("    using MPI_MODE_RDONLY..................");
     }
@@ -106,16 +109,17 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
     MPI_File_close ( &file1 );
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("    using MPI_MODE_RDWR....................");
     }
@@ -129,16 +133,17 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
     MPI_File_close ( &file1 );
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("    using MPI_MODE_APPEND..................");
     }
@@ -152,16 +157,17 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
     MPI_File_close ( &file1 );
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("    using MPI_MODE_EXCL....................");
     }
@@ -200,15 +206,16 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     cart_comm_open_2D ( comm, root );
     /**********************************************************************/ 
     cart_comm_open_3D ( comm, root );
@@ -228,12 +235,13 @@ int main ( int argc, char * argv[] )
 	localret = 1;
 
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
     /* Error code verification */
@@ -257,12 +265,13 @@ int main ( int argc, char * argv[] )
 	localret = 1;
 
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
     /* Error code verification */
@@ -280,17 +289,18 @@ int main ( int argc, char * argv[] )
 	localret = 1;
 
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
         unlink ("writefile1.out");
     }
 
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     /* We used file close multiple times already, use however the return 
        value of the very first MPI_File_close operation */
     if ( rank == root ) {
@@ -303,14 +313,15 @@ int main ( int argc, char * argv[] )
 	localret = 1;
 
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("Checking File open/close 2048 times........");
     }
@@ -326,16 +337,17 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
 
-    /**********************************************************************/ 
+    /**********************************************************************/
     if ( rank == root ) {
 	printf("Checking for MPI_File_delete...............");
     }
@@ -360,12 +372,13 @@ int main ( int argc, char * argv[] )
 	localret = 1;
     
     MPI_Reduce ( &localret, &globalret, 1, MPI_INT, MPI_MAX, root, comm);
-    
-    if ( rank == root )  { 
+
+    if ( rank == root )  {
 	if ( globalret == 0 )
 	    printf("working\n");
 	else
 	    printf("false\n");
+	total += globalret;
     }
 
 
@@ -373,7 +386,7 @@ int main ( int argc, char * argv[] )
   MPI_Finalize ();
 #endif
 
-  return 0;
+  return total;
 }
 
 

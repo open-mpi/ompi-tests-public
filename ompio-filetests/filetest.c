@@ -59,48 +59,49 @@ int main ( int argc, char * argv[] )
 	MPI_Abort ( MPI_COMM_WORLD, 1);
     }
     
+    int total = 0;
+
     /* The open test, contains also close */
-    open_test ( MPI_COMM_WORLD, root);
+    total += open_test ( MPI_COMM_WORLD, root);
 
     /* The write test, contains also write_at */
-    write_test ( MPI_COMM_WORLD, root);
+    total += write_test ( MPI_COMM_WORLD, root);
 
     /* The read test, contains also read_at */
-    read_test ( MPI_COMM_WORLD, root);
+    total += read_test ( MPI_COMM_WORLD, root);
 
     /* The fileview test uses both read and write */
-    fileview_test ( MPI_COMM_WORLD, root);
+    total += fileview_test ( MPI_COMM_WORLD, root);
 
     /* The write_all test also tests write_at_all */
-    write_all_test ( MPI_COMM_WORLD, root);
+    total += write_all_test ( MPI_COMM_WORLD, root);
 
     /* The read_all test also tests read_at_all */
-    read_all_test ( MPI_COMM_WORLD, root);
+    total += read_all_test ( MPI_COMM_WORLD, root);
 
     /* The iwrite test, contains also iwrite_at */
-    iwrite_test ( MPI_COMM_WORLD, root);
+    total += iwrite_test ( MPI_COMM_WORLD, root);
 
     /* The iread test, contains also iread_at */
-    iread_test ( MPI_COMM_WORLD, root);
+    total += iread_test ( MPI_COMM_WORLD, root);
 
     /* The write_shared test also tests write_ordered */
-    write_shared_test ( MPI_COMM_WORLD, root);
+    total += write_shared_test ( MPI_COMM_WORLD, root);
 
     /* The read_shared test also tests read_ordered */
-    read_shared_test ( MPI_COMM_WORLD, root);
+    total += read_shared_test ( MPI_COMM_WORLD, root);
 
     /* Test various utility functions in MPI I/O */
-    utils_test ( MPI_COMM_WORLD, root);
+    total += utils_test ( MPI_COMM_WORLD, root);
 
     /* Test various Info objects with MPI I/O */
-    info_test ( MPI_COMM_WORLD, root);
+    total += info_test ( MPI_COMM_WORLD, root);
 
     /* Test atomicity function */
-    atomicity_test ( MPI_COMM_WORLD, root);
-    
-    MPI_Finalize ();
+    total += atomicity_test ( MPI_COMM_WORLD, root);
 
-    return 0;
+    MPI_Finalize ();
+    return ( total > 0 ) ? 1 : 0;
 }
 
 

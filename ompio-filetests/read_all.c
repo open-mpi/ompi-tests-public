@@ -37,6 +37,7 @@ int main ( int argc, char * argv[] )
     int displs2[2];
     MPI_Request req[2];
     MPI_Status stats[2];
+    int total = 0;
 #ifndef GLOBAL
     MPI_Init ( &argc, &argv );
     if ( argc > 1 )  sleep ( 20 );
@@ -132,6 +133,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 /*******************************************************************************/	
@@ -141,8 +143,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
        
 /*******************************************************************************/	
@@ -177,6 +181,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 /*******************************************************************************/	
@@ -209,6 +214,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
     }
 
@@ -270,6 +276,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
         unlink("readfile2.out");
     }
@@ -339,6 +346,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
     }
     MPI_Type_free (&fview4);
@@ -381,6 +389,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 
@@ -450,6 +459,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 	
 	unlink("readfile2.out");
@@ -492,6 +502,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 /*******************************************************************************/	
@@ -501,8 +512,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -539,6 +552,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
     }
 /*******************************************************************************/	
@@ -577,6 +591,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 /*******************************************************************************/	
@@ -586,8 +601,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &status, MPI_INT, &count );
 	if ( count == 12 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /*******************************************************************************/	
 /*******************************************************************************/	
@@ -623,6 +640,7 @@ int main ( int argc, char * argv[] )
 	}
 	else {
 	    printf("false\n");
+	    total++;
 	}
 
 	unlink("readfile1.out");
@@ -637,5 +655,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }

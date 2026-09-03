@@ -29,6 +29,7 @@ int main ( int argc, char * argv[] )
     MPI_Status stat;
     int *bigarr=NULL;
     int writearr[6];
+    int total = 0;
 
     
 #ifndef GLOBAL
@@ -91,8 +92,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && ret2 == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /***********************************************************************************/
 /***********************************************************************************/
@@ -101,8 +104,10 @@ int main ( int argc, char * argv[] )
 	MPI_Get_elements ( &stat, MPI_INT, &count );
 	if ( count == 6 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 /***********************************************************************************/
 /***********************************************************************************/
@@ -148,8 +153,10 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
     }	
 /***********************************************************************************/
 /***********************************************************************************/
@@ -198,10 +205,12 @@ int main ( int argc, char * argv[] )
 	    }
 	    close (fh);
 	}
-	if ( localret == 0 ) 
+	if ( localret == 0 )
 	    printf("working\n");
-	else 
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	free ( bigarr );
 	unlink ("bigfile.out");
 /***********************************************************************************/
@@ -219,6 +228,7 @@ int main ( int argc, char * argv[] )
         }
         else {
             printf("false\n");
+            total++;
         }
 /***********************************************************************************/
 /***********************************************************************************/
@@ -247,10 +257,12 @@ int main ( int argc, char * argv[] )
             localret = 1;
         }
         MPI_File_close (&file1);
-	if ( localret == 0 ) 
+	if ( localret == 0 )
 	    printf("working\n");
-	else 
+	else {
 	    printf("false\n");
+	    total++;
+	}
 	free ( reqs );
 	unlink ("writefile3.out");
 
@@ -296,16 +308,20 @@ int main ( int argc, char * argv[] )
 	
 	if ( ret == MPI_SUCCESS && localret == 0 )
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
 
 	printf("    verifying status fields................");
 	MPI_Get_elements ( &stat, MPI_INT, &count );
 	if ( count == 6 ) 
 	    printf("working\n");
-	else
+	else {
 	    printf("false\n");
+	    total++;
+	}
 
        /* clean up the files generated in this test case. */
 	unlink ("writefile3.out");
@@ -314,5 +330,5 @@ int main ( int argc, char * argv[] )
     MPI_Finalize ();
 #endif
 
-    return 0;
+    return total;
 }
