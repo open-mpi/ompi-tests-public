@@ -17,6 +17,8 @@ int event_info_failed = 0;
 int event_info_displacements_start_at_0 = 1;
 int event_count_result = 0;
 int event_get_num_handle_null = 0;
+int event_info_negative_name_len_handled = 1;
+int event_info_negative_desc_len_handled = 1;
 
 
 void print_results() {
@@ -32,6 +34,8 @@ void print_results() {
 
     if ( do_failure_tests ) {
         print_pf_result("MPI_T_event_get_num", "Handle NULL argument", event_get_num_handle_null);
+        print_pf_result("MPI_T_event_get_info", "Handle negative name length", event_info_negative_name_len_handled);
+        print_pf_result("MPI_T_event_get_info", "Handle negative desc length", event_info_negative_desc_len_handled);
     }
 
     fprintf(outstream, "%-*s - %-*s : %6d\n", func_width, "TOTAL ERROR COUNT", metric_width, "", error_count);
@@ -196,6 +200,61 @@ void test_get_info() {
 
             fprintf(outstream, "\n");
 
+        }
+    }
+
+
+    if ( do_failure_tests ) {
+
+        int save_name_len;
+
+        save_name_len = ci.name_len;
+
+        /* name_len and desc_len are INOUT arguments and should handle negative values
+         * Ideally it would return MPI_ERR_ARG (although not specified in MPI Standard v4.0),
+         * but otherwise it should at least not segfault.*/
+        ci.name_len = -100;
+        print_debug("Testing MPI_T_event_get_info with negative name_len\n");
+        retval = MPI_T_event_get_info(
+                ci.event_index,
+                ci.name,
+                &(ci.name_len),
+                &(ci.verbosity),
+                ci.array_of_datatypes,
+                ci.array_of_displacements,
+                &(ci.num_elements),
+                &(ci.enumtype),
+                &(ci.info),
+                ci.desc,
+                &(ci.desc_len),
+                &(ci.bind)
+                ) ;
+
+        if (MPI_ERR_ARG != retval && 1 == event_info_negative_name_len_handled ) {
+            event_info_negative_name_len_handled = 0;
+        }
+
+        ci.name_len = save_name_len;
+        ci.desc_len = -100;
+
+        print_debug("Testing MPI_T_event_get_info with negative name_len\n");
+        retval = MPI_T_event_get_info(
+                ci.event_index,
+                ci.name,
+                &(ci.name_len),
+                &(ci.verbosity),
+                ci.array_of_datatypes,
+                ci.array_of_displacements,
+                &(ci.num_elements),
+                &(ci.enumtype),
+                &(ci.info),
+                ci.desc,
+                &(ci.desc_len),
+                &(ci.bind)
+                ) ;
+
+        if (MPI_ERR_ARG != retval && 1 == event_info_negative_desc_len_handled ) {
+            event_info_negative_desc_len_handled = 0;
         }
     }
 
